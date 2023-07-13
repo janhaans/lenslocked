@@ -15,9 +15,21 @@ func contactHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "<h1>Contact Page</h1><p>To get in touch, email me at <a href=\"mailto:jon@calhoun.io\">jan.haans@gmail.com</a>.</p>")
 }
 
+type Router struct{}
+
+func (router Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	switch r.URL.Path {
+	case "/":
+		homeHandler(w, r)
+	case "/contact":
+		contactHandler(w, r)
+	default:
+		http.NotFound(w, r)
+	}
+}
+
 func main() {
-	http.HandleFunc("/", homeHandler)
-	http.HandleFunc("/contact", contactHandler)
+	var router Router
 	fmt.Println("Starting the server on :3000...")
-	http.ListenAndServe(":3000", nil)
+	http.ListenAndServe(":3000", router)
 }
