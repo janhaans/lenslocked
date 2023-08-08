@@ -3,6 +3,10 @@ package main
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+
 )
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
@@ -36,20 +40,25 @@ func faqHandler(w http.ResponseWriter, r *http.Request) {
 `)
 }
 
-func pathHandler(w http.ResponseWriter, r *http.Request) {
-	switch r.URL.Path {
-	case "/":
-		homeHandler(w, r)
-	case "/contact":
-		contactHandler(w, r)
-	case "/faq":
-		faqHandler(w,r)
-	default:
-		http.NotFound(w, r)
-	}
+func showGalleryHandler(w http.ResponseWriter, r *http.Request) {
+	galleryID := chi.URLParam(r, "galleryID")
+	w.Header().Set("Content-Type", "text/html; charset=UTF-8")
+	fmt.Fprintf(w, `<h1> GalleryID = %s`, galleryID)
 }
 
+
 func main() {
+	r := chi.NewRouter()
+	r.Use(middleware.Logger)
+	r.Get("/", homeHandler)
+	r.Get("/contact", contactHandler)
+	r.Get("/faq", faqHandler)
+	r.Get("/galleries/{galleryID}", showGalleryHandler)
+	//Example of Using Logger for single route
+	//r.Get("/galleries/{galleryID}", middleware.Logger(http.HandlerFunc(showGalleryHandler)).(http.HandlerFunc))
+	r.NotFound(func (w http.ResponseWriter, r *http.Request) {
+		http.Error(w, "Page Not Found", http.StatusNotFound)
+	})
 	fmt.Println("Starting the server on :3000...")
-	http.ListenAndServe(":3000", http.HandlerFunc(pathHandler))
+	http.ListenAndServe(":3000", r)
 }
