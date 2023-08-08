@@ -3,6 +3,9 @@ package main
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/go-chi/chi/v5"
+
 )
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
@@ -25,21 +28,6 @@ func pathHandler(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 	}
 }
-
-/*
-type Router struct{}
-
-func (router Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	switch r.URL.Path {
-	case "/":
-		homeHandler(w, r)
-	case "/contact":
-		contactHandler(w, r)
-	default:
-		http.NotFound(w, r)
-	}
-}
-*/
 
 func main() {
 	fmt.Println("Starting the server on :3000...")
