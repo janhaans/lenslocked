@@ -3,47 +3,52 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"path/filepath"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"html/template"
 
 )
 
+func executeTemplate(w http.ResponseWriter, tplPath string, data interface{}) {
+	tpl, err := template.ParseFiles(tplPath)
+	if err != nil {
+		fmt.Printf("There is a template parsing error: %v", err)
+		http.Error(w, "There is a template parsing error", http.StatusInternalServerError)
+		return
+	}
+	err = tpl.Execute(w, data)
+	if err != nil {
+		fmt.Printf("Template execution error: %v", err)
+		http.Error(w, "Template execution error", http.StatusInternalServerError)
+		return
+	}
+}
+
 func homeHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	fmt.Fprint(w, "<h1>Welcome to my awesome site!</h1>")
+	tplPath := filepath.Join("templates", "home.gohtml")
+	executeTemplate(w, tplPath, nil)
 }
 
 func contactHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	fmt.Fprintf(w, "<h1>Contact Page</h1><p>To get in touch, email me at <a href=\"mailto:jon@calhoun.io\">jo@calhoun.io</a>.</p>")
+	tplPath := filepath.Join("templates", "contact.gohtml")
+	executeTemplate(w, tplPath, nil)
 }
 
 func faqHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	fmt.Fprint(w, `<h1>FAQ Page</h1>
-<ul>
-  <li>
-    <b>Is there a free version?</b>
-    Yes! We offer a free trial for 30 days on any paid plans.
-  </li>
-  <li>
-    <b>What are your support hours?</b>
-    We have support staff answering emails 24/7, though response
-    times may be a bit slower on weekends.
-  </li>
-  <li>
-    <b>How do I contact support?</b>
-    Email us - <a href="mailto:support@lenslocked.com">support@lenslocked.com</a>
-  </li>
-</ul>
-`)
+	tplPath := filepath.Join("templates", "faq.gohtml")
+	executeTemplate(w, tplPath, nil)
 }
 
 func showGalleryHandler(w http.ResponseWriter, r *http.Request) {
 	galleryID := chi.URLParam(r, "galleryID")
 	w.Header().Set("Content-Type", "text/html; charset=UTF-8")
-	fmt.Fprintf(w, `<h1> GalleryID = %s`, galleryID)
+	tplPath := filepath.Join("templates", "galleries.gohtml")
+	executeTemplate(w, tplPath, galleryID)
 }
 
 
