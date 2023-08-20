@@ -15,28 +15,16 @@ func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 
-	tmplHome, err := views.ParseTemplate(filepath.Join("templates", "home.gohtml"))
-	if err != nil {
-		panic(err)
-	}
+	tmplHome := views.Must(views.ParseTemplate(filepath.Join("templates", "home.gohtml")))
 	r.Get("/", controller.StaticHandler(tmplHome))
 
-	tmplContact, err := views.ParseTemplate(filepath.Join("templates", "contact.gohtml"))
-	if err != nil {
-		panic(err)
-	}
+	tmplContact := views.Must(views.ParseTemplate(filepath.Join("templates", "contact.gohtml")))
 	r.Get("/contact", controller.StaticHandler(tmplContact))
 
-	tmplFaq, err := views.ParseTemplate(filepath.Join("templates", "faq.gohtml"))
-	if err != nil {
-		panic(err)
-	}
+	tmplFaq := views.Must(views.ParseTemplate(filepath.Join("templates", "faq.gohtml")))
 	r.Get("/faq", controller.StaticHandler(tmplFaq))
 
-	tmplGalleries, err := views.ParseTemplate(filepath.Join("templates", "galleries.gohtml"))
-	if err != nil {
-		panic(err)
-	}
+	tmplGalleries := views.Must(views.ParseTemplate(filepath.Join("templates", "galleries.gohtml")))
 	r.Get("/galleries/{galleryID}", controller.ShowGalleryHandler(tmplGalleries))
 
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {

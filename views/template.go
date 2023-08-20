@@ -14,7 +14,7 @@ func (t *Template) Execute(w http.ResponseWriter, data interface{}) error {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	err := t.Template.Execute(w, data)
 	if err != nil {
-		err = fmt.Errorf("HTML Template Execution failed %v", err)
+		err = fmt.Errorf("HTML Template Execution failed: %v", err)
 		return err
 	}
 	return nil
@@ -23,8 +23,15 @@ func (t *Template) Execute(w http.ResponseWriter, data interface{}) error {
 func ParseTemplate(filepath string) (*Template, error) {
 	tmpl, err := template.ParseFiles(filepath)
 	if err != nil {
-		err = fmt.Errorf("HTML Template Parsing failed %v", err)
+		err = fmt.Errorf("HTML template parsing failed: %v", err)
 		return &Template{}, err
 	}
 	return &Template{tmpl}, nil
+}
+
+func Must(tmpl *Template, err error) *Template {
+	if err != nil {
+		panic(err)
+	}
+	return tmpl
 }
