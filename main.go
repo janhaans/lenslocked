@@ -14,17 +14,10 @@ func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 
-	tmplHome := views.Must(views.ParseFS("home.gohtml"))
-	r.Get("/", controller.StaticHandler(tmplHome))
-
-	tmplContact := views.Must(views.ParseFS("contact.gohtml"))
-	r.Get("/contact", controller.StaticHandler(tmplContact))
-
-	tmplFaq := views.Must(views.ParseFS("faq.gohtml"))
-	r.Get("/faq", controller.StaticHandler(tmplFaq))
-
-	tmplGalleries := views.Must(views.ParseFS("galleries.gohtml"))
-	r.Get("/galleries/{galleryID}", controller.ShowGalleryHandler(tmplGalleries))
+	r.Get("/", controller.StaticHandler(views.Must(views.ParseFS("home.gohtml"))))
+	r.Get("/contact", controller.StaticHandler(views.Must(views.ParseFS("contact.gohtml"))))
+	r.Get("/faq", controller.StaticHandler(views.Must(views.ParseFS("faq.gohtml"))))
+	r.Get("/galleries/{galleryID}", controller.ShowGalleryHandler(views.Must(views.ParseFS("galleries.gohtml"))))
 
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Page Not Found", http.StatusNotFound)

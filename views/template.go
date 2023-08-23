@@ -22,19 +22,8 @@ func (t *Template) Execute(w http.ResponseWriter, data interface{}) error {
 	return nil
 }
 
-/*
-func ParseTemplate(filepath string) (*Template, error) {
-	tmpl, err := template.ParseFiles(filepath)
-	if err != nil {
-		err = fmt.Errorf("HTML template parsing failed: %v", err)
-		return &Template{}, err
-	}
-	return &Template{tmpl}, nil
-}
-*/
-
-func ParseFS(filepath string) (*Template, error) {
-	tmpl, err := template.ParseFS(templates.FS, filepath)
+func ParseFS(filepath ...string) (*Template, error) {
+	tmpl, err := template.ParseFS(templates.FS, filepath...)
 	if err != nil {
 		err = fmt.Errorf("HTML template parsing failed: %v", err)
 		return &Template{}, err
